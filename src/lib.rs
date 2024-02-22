@@ -35,6 +35,11 @@ pub trait Emit: EmitSlice {
     }
 
     #[inline]
+    fn bind_new_label(&mut self) -> label::StaticLabel {
+        label::StaticLabel::from_position(self.position())
+    }
+
+    #[inline]
     fn emit_branch<F, L, E, EmitFn>(
         &mut self,
         label: &mut L,

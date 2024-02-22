@@ -11,6 +11,41 @@ pub use map::LabelMap;
 pub use buffer::{LabelBuffer, RcLabelBuffer};
 
 
+#[derive(Clone, Copy)]
+pub struct StaticLabel {
+    position: u64,
+}
+
+impl StaticLabel {
+    #[inline]
+    pub fn from_position(position: u64) -> StaticLabel {
+        StaticLabel {
+            position,
+        }
+    }
+}
+
+impl<E, F> Label<E, F> for StaticLabel
+    where E: Emit,
+          F: FixupKind<E>
+{
+    #[inline]
+    fn position(&self) -> Option<u64> {
+        Some(self.position)
+    }
+
+    #[inline]
+    fn add_fixup(&mut self, _fixup: Fixup<E, F>) {
+        panic!("static labels don't need fixups");
+    }
+
+    #[inline]
+    fn bind(&mut self, _emit: &mut E, _position: u64) -> Result<(), Error> {
+        panic!("label already bound");
+    }
+}
+
+
 pub struct OptionLabel<E, F>
     where E: Emit,
           F: FixupKind<E>
